@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboFlow Detection Results</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #ffffff; /* Text color */
+            overflow: hidden; /* Prevent scrollbars */
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures video covers the entire background */
+            z-index: -1; /* Places video behind other elements */
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Full viewport height */
+            text-align: center; /* Center align text */
+            padding: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Adds a shadow for better readability */
+        }
+
+        h1 {
+            font-size: 3em; /* Increased font size */
+            margin-bottom: 20px;
+            font-weight: bold; /* Bold font */
+            color: #ffcc00; /* Gold color for the heading */
+        }
+
+        h2 {
+            font-size: 2em; /* Size for subheadings */
+            margin: 15px 0; /* Margin for spacing */
+            color: #ffffff; /* White color for subheadings */
+        }
+
+        p {
+            font-size: 1.5em; /* Increased font size for paragraphs */
+            color: #ffffff; /* White text color */
+            margin: 0; /* Remove margin */
+        }
+
+        ul {
+            list-style-type: none; /* Remove bullets from list */
+            padding: 0; /* Remove padding */
+            font-size: 1.2em; /* Font size for list items */
+            color: #ffffff; /* White color for list items */
+        }
+
+        li {
+            margin: 10px 0; /* Margin for list items */
+        }
+
+        a {
+            color: #ffcc00; /* Gold color for links */
+            text-decoration: none; /* Remove underline */
+            font-size: 1.2em; /* Font size for links */
+        }
+
+        a:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Video -->
+    <video class="video-background" autoplay muted loop>
+        <source src="{% static 'js/smart.webm' %}" type="video/webm">
+        <source src="{% static 'js/smart vision demo.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="container">
+        <h1>Detection Results</h1>
+        
+        <h2>Uploaded Image</h2>
+        <img src="{{ image_url }}" alt="Uploaded Image" style="max-width: 100%; height: auto;">
+        
+        <h2>Predictions</h2>
+        {% if output %}
+            <ul>
+                {% for prediction in output %}
+                    <li>
+                        <strong>Label:</strong> {{ prediction.class }} <br>
+                        <strong>Confidence:</strong> {{ prediction.probability|floatformat:2 }} <br>
+                        <strong>Bounding Box:</strong> ({{ prediction.xmin }}, {{ prediction.ymin }}) to ({{ prediction.xmax }}, {{ prediction.ymax }})
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No predictions found.</p>
+        {% endif %}
+        
+        <a href="{% url 'index' %}">Upload another image</a>
+    </div>
+</body>
+</html>

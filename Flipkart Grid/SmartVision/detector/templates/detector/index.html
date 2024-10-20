@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Vision System</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <video autoplay muted loop id="bg-video">
+        <source src="{% static 'js/smart.webm' %}" type="video/webm">
+        <source src="{% static 'js/smart_vision_demo.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      
+      <!-- <img src="{% static 'js/smart_Vision_demo.png' %}" alt="Smart Vision Demo" />
+       -->
+
+  <div class="overlay"></div>
+
+  <div class="container">
+    <h1>SMART VISION SYSTEM</h1>
+    
+    <div class="section">
+      <!-- Object Detection (RoboFlow API) -->
+      <div class="box">
+        <i class="fas fa-robot icon"></i>
+        <h2>Object Detection</h2>
+        <form method="POST" enctype="multipart/form-data" action="/detect/object">
+          {% csrf_token %}
+          <input type="file" name="image" required><br><br>
+          <button class="start-btn" type="submit">Start Object Detection</button>
+        </form>
+        <div class="output">
+
+          <p id="object-output">{{ output }}</p>
+        </div>
+      </div>
+
+      <!-- Fruit/Vegetable Detection (Local Model) -->
+      <div class="box">
+        <i class="fas fa-apple-alt icon"></i>
+        <h2>Freshness Detection</h2>
+        <form method="POST" enctype="multipart/form-data" action="/detect/fruit">
+          {% csrf_token %}
+          <input type="file" name="image" required><br><br>
+          <button class="start-btn" type="submit">Start Fruit Detection</button>
+        </form>
+        <div class="output">
+
+          <p id="fruit-output">{{ prediction }}</p>
+        </div>
+      </div>
+
+      <!-- Camera Stream Text Detection -->
+      <div class="box">
+        <i class="fas fa-video icon"></i>
+        <h2>Text Detection from Camera Stream</h2>
+        <form action="{% url 'capture_from_camera' %}" method="POST">
+          {% csrf_token %}
+          <label for="camera_url">Camera URL:</label>
+          <input type="text" name="camera_url" value="http://192.168.1.7:8080/video"><br><br>
+          
+          <label for="interval">Capture Interval (seconds):</label>
+          <input type="number" name="interval" value="5"><br><br>
+          
+          <label for="num_items">Number of items to capture:</label>
+          <input type="number" name="num_items" value="5"><br><br>
+          
+          <button class="start-btn" type="submit">Start Camera Stream</button>
+        </form>
+        <div class="output">
+
+          <p id="text-output">Waiting for text extraction...</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
